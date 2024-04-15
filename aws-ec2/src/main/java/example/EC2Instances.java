@@ -45,7 +45,9 @@ public class EC2Instances {
 				case 3: // Describe instance
 					AWSHelper.describeInstance(sc);
 					break;	
-				
+				case 4: // Start instance
+					AWSHelper.startInstance(sc);
+					break;
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}

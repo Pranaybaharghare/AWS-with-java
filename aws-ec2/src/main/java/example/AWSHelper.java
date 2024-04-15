@@ -202,5 +202,39 @@ public final class AWSHelper {
 		}
 		System.out.println();
 	}
+	
+	public static void startInstance(Scanner sc) {
+		System.out.println("enter instance id to start instance");
+		String existingInstanceId = sc.next();
+
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.standard().withRegion(REGION).build();
+
+		System.out.println("Starting EC2 instance ...");
+
+		StartInstancesRequest request = new StartInstancesRequest().withInstanceIds(existingInstanceId);
+
+		ec2.startInstances(request);
+
+		DescribeInstancesRequest requestInstanceDetails = new DescribeInstancesRequest()
+				.withInstanceIds(existingInstanceId);
+		DescribeInstancesResult response = ec2.describeInstances(requestInstanceDetails);
+
+		List<Reservation> reservations = response.getReservations();
+		Reservation reservation = reservations.get(0);
+
+		List<Instance> instances = reservation.getInstances();
+		Instance instance = instances.get(0);
+
+		String instanceId = instance.getInstanceId();
+		String publicIpAddress = instance.getPublicIpAddress();
+		String publicDnsName = instance.getPublicDnsName();
+		String keyPairName = instance.getKeyName();
+
+		System.out.println("INSTANCE ID: " + instanceId);
+		System.out.println("PUBLIC IP ADDRESS: " + publicIpAddress);
+		System.out.println("PUBLIC DNS NAME: " + publicDnsName);
+		System.out.println("Key Pair: " + keyPairName);
+
+	}
 
 }
