@@ -157,4 +157,50 @@ public final class AWSHelper {
 		return instanceId;
 	}
 
+	public static void describeInstance(Scanner sc) {
+		System.out.println("enter instance id to describe instance");
+		String existingInstanceId = sc.next();
+
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.standard().withRegion(REGION).build();
+
+		System.out.println("Describing EC2 instance ...");
+
+		DescribeInstancesRequest request = new DescribeInstancesRequest().withInstanceIds(existingInstanceId);
+		DescribeInstancesResult response = ec2.describeInstances(request);
+
+		List<Reservation> reservations = response.getReservations();
+		Reservation reservation = reservations.get(0);
+
+		List<Instance> instances = reservation.getInstances();
+		Instance instance = instances.get(0);
+
+		String imageId = instance.getImageId();
+		String instanceType = instance.getInstanceType();
+		String state = instance.getState().getName();
+		List<GroupIdentifier> groups = instance.getSecurityGroups();
+		String privateDnsName = instance.getPrivateDnsName();
+		String privateIpAddress = instance.getPrivateIpAddress();
+		String publicDnsName = instance.getPublicDnsName();
+		String publicIpAddress = instance.getPublicIpAddress();
+		List<Tag> tags = instance.getTags();
+
+		System.out.println("Instance Id:       " + existingInstanceId);
+		System.out.println("Image Id:          " + imageId);
+		System.out.println("Instance Type:     " + instanceType);
+		System.out.println("Security Groups:   " + groups);
+		for (int i = 0; i < groups.size(); i++) {
+			System.out.println("Security Group:    " + groups.get(i));
+		}
+		System.out.println("State:             " + state);
+		System.out.println("Private DNS Name:  " + privateDnsName);
+		System.out.println("Private IP Name:   " + privateIpAddress);
+		System.out.println("Public DNS Name:   " + publicDnsName);
+		System.out.println("Public IP Name:    " + publicIpAddress);
+		System.out.println("Tags:              " + tags);
+		for (int i = 0; i < tags.size(); i++) {
+			System.out.println("Tags:              " + tags.get(i));
+		}
+		System.out.println();
+	}
+
 }

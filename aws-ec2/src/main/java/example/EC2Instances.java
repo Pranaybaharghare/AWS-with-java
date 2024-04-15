@@ -41,6 +41,9 @@ public class EC2Instances {
 				case 2: // Run instance
 					instanceId = AWSHelper.runInstance(sc);
 					System.out.println("Instance Id: " + instanceId);
+					break;
+				case 3: // Describe instance
+					AWSHelper.describeInstance(sc);
 					break;	
 				
 				default:
