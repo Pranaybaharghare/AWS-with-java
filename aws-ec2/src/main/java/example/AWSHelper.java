@@ -278,4 +278,92 @@ public final class AWSHelper {
 		ec2.terminateInstances(request);
 	}
 
+	public static void connectInstance(Scanner sc) throws SftpException {
+
+		System.out.println("enter IP ADDRESS ");
+		String host = sc.next(); // ip-address
+		String user = "ec2-user";
+
+//        System.out.println("enter keypair value");
+//        String keyPairValue = sc.next();
+//        String privateKeyFilePath = "C:\\Users\\Pranay B\\Downloads\\"+keyPairValue+".pem";
+
+		System.out.println("enter the password");
+		String pwd = sc.next();
+		JSch jsch = new JSch();
+		Session session = null;
+		try {
+			session = jsch.getSession(user, host, 22);
+			session.setPassword(pwd);
+			session.setConfig("StrictHostKeyChecking", "no");
+			System.out.println("session created.");
+
+			session.connect();
+			System.out.println("connected");
+
+			/*
+			 * Channel channel=session.openChannel("shell");
+			 * channel.setInputStream(System.in); channel.setOutputStream(System.out);
+			 * channel.connect(3*1000);
+			 */
+			// Execute a command on the EC2 instance
+
+			int option = 0;
+			Scanner sc2 = new Scanner(System.in);
+			do {
+				printMenu();
+				option = sc2.nextInt();
+				if (option >= 0 && option <= 1) {
+					if (option == 0) {
+						System.out.println("\nBye");
+						// Disconnect the channel
+//						channelExec.disconnect();
+
+						session.disconnect();
+					} else {
+						Scanner sc1 = new Scanner(System.in);
+						boolean currentSession = true;
+						while (currentSession) {
+							System.out.println("enter a command");
+							String command = sc1.nextLine(); // Replace with your desired command
+							if (command.equals("exit")) {
+								currentSession = false;
+							} else {
+								System.out.println(
+										"__________________________________________________________________________________________________________________");
+								ChannelExec channelExec = (ChannelExec) session.openChannel("exec");
+								channelExec.setCommand(command);
+
+								// Get the input stream to read the command output
+								InputStream inputStream = channelExec.getInputStream();
+
+								// Connect the channel
+								channelExec.connect();
+
+								// Read and print the command output
+								BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+								String line;
+								while ((line = reader.readLine()) != null) {
+									System.out.println(line);
+								}
+							}
+
+						}
+						option = 0;
+					}
+				}
+			} while (option > 0 && option <= 1);
+
+		} catch (JSchException | java.io.IOException e) {
+			e.printStackTrace();
+
+		}
+	}
+
+	private static void printMenu() {
+		System.out.println("\nMENU");
+		System.out.println("0 = exit the instance");
+		System.out.println("1 = Execute command");
+		System.out.println("enter a option : ");
+	}
 }

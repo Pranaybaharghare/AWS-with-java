@@ -58,6 +58,9 @@ public class EC2Instances {
 					AWSHelper.terminateInstance(sc);
 					instanceId = null;
 					break;	
+				case 8: // connect with instance
+					AWSHelper.connectInstance(sc);
+					break;	
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}
