@@ -88,5 +88,73 @@ public final class AWSHelper {
 		System.out.println();
 	}
 
-	
+	public static String getUserDataScript(String password) {
+		// This script sets the password for the default user (e.g., ec2-user)
+		// Modify this script based on your Linux distribution
+		return "#!/bin/bash\n" + "echo 'ec2-user:" + password + "' | sudo chpasswd\n"
+				+ "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config\n"
+				+ "sudo service sshd restart\n";
+	}
+
+	private static void tagInstance(AmazonEC2 ec2, String instanceId, String tagName, String value) {
+		CreateTagsRequest tagRequest = new CreateTagsRequest().withResources(instanceId)
+				.withTags(new Tag(tagName, value));
+		ec2.createTags(tagRequest);
+	}
+
+	public static String runInstance(Scanner sc) {
+
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.standard().withRegion(REGION).build();
+
+		System.out.println("enter a key-pair name");
+		String keyPairValue = sc.next();
+		System.out.println("enter the password");
+		String instancePassword = sc.next();
+		CreateKeyPairRequest keyPairRequest = new CreateKeyPairRequest().withKeyName(keyPairValue);
+		CreateKeyPairResult response = ec2.createKeyPair(keyPairRequest);
+		KeyPair keyPair = response.getKeyPair();
+		String privateKeyContent = keyPair.getKeyMaterial();
+		String privateKeyFilePath = "C:\\Users\\Pranay B\\Downloads\\" + keyPairValue + ".pem";
+
+		try (FileWriter writer = new FileWriter(privateKeyFilePath)) {
+			writer.write(privateKeyContent);
+		} catch (IOException e) {
+			System.err.println("Error saving private key: " + e.getMessage());
+		}
+		// Print the private key
+		System.out.println("Successfully created key pair named " + keyPairValue);
+
+		System.out.println("Creating E2 instance ...");
+		String getUserDataScript = getUserDataScript(instancePassword);
+		String base64UserDataScript = java.util.Base64.getEncoder()
+				.encodeToString(getUserDataScript.getBytes(StandardCharsets.UTF_8));
+		RunInstancesRequest runRequest = new RunInstancesRequest().withImageId(AMI_ID).withInstanceType(INSTANCE_TYPE)
+				.withMaxCount(1).withMinCount(1).withKeyName(keyPairValue).withUserData(base64UserDataScript);
+		// .withSecurityGroups(SECURITY_GROUP);
+
+		RunInstancesResult instancesResult = ec2.runInstances(runRequest);
+
+		String reservationId = instancesResult.getReservation().getReservationId();
+
+		System.out.println(" Reservation Id:   " + reservationId);
+
+		List<Instance> instances = instancesResult.getReservation().getInstances();
+		Instance instance = instances.get(0);
+		String instanceId = instance.getInstanceId();
+		String publicIpAddress = instance.getPublicIpAddress();
+		String publicDnsName = instance.getPublicDnsName();
+		String keyPairName = instance.getKeyName();
+
+		// Tag EC2 Instance
+		System.out.println("enter instance name");
+		String tagName = sc.next();
+		tagInstance(ec2, instanceId, "Name", tagName);
+		System.out.printf("Added Tag: Name with Value: %s\n", tagName);
+
+		System.out.println("PUBLIC IP ADDRESS: " + publicIpAddress);
+		System.out.println("PUBLIC DNS NAME: " + publicDnsName);
+		System.out.println("Key Pair: " + keyPairName);
+		return instanceId;
+	}
+
 }

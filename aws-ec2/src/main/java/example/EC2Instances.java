@@ -38,6 +38,10 @@ public class EC2Instances {
 				case 1: // Describe all instances
 					AWSHelper.describeInstances();
 					break;
+				case 2: // Run instance
+					instanceId = AWSHelper.runInstance(sc);
+					System.out.println("Instance Id: " + instanceId);
+					break;	
 				
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
