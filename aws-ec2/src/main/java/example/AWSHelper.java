@@ -237,4 +237,17 @@ public final class AWSHelper {
 
 	}
 
+
+	public static void stopInstance(Scanner sc) {
+		System.out.println("enter instance id to stop instance");
+		String existingInstanceId = sc.next();
+
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.standard().withRegion(REGION).build();
+
+		System.out.println("Stopping EC2 instance ...");
+
+		StopInstancesRequest request = new StopInstancesRequest().withInstanceIds(existingInstanceId);
+
+		ec2.stopInstances(request);
+	}
 }
