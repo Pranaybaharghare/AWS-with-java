@@ -54,6 +54,10 @@ public class EC2Instances {
 				case 6: // Reboot instance
 					AWSHelper.rebootInstance(sc);
 					break;	
+				case 7: // Terminate instance
+					AWSHelper.terminateInstance(sc);
+					instanceId = null;
+					break;	
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}

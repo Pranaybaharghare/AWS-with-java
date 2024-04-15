@@ -202,7 +202,7 @@ public final class AWSHelper {
 		}
 		System.out.println();
 	}
-	
+
 	public static void startInstance(Scanner sc) {
 		System.out.println("enter instance id to start instance");
 		String existingInstanceId = sc.next();
@@ -237,7 +237,6 @@ public final class AWSHelper {
 
 	}
 
-
 	public static void stopInstance(Scanner sc) {
 		System.out.println("enter instance id to stop instance");
 		String existingInstanceId = sc.next();
@@ -250,7 +249,7 @@ public final class AWSHelper {
 
 		ec2.stopInstances(request);
 	}
-	
+
 	public static void rebootInstance(Scanner sc) {
 
 		System.out.println("enter instance id to reboot instance");
@@ -264,4 +263,19 @@ public final class AWSHelper {
 
 		ec2.rebootInstances(request);
 	}
+
+	public static void terminateInstance(Scanner sc) {
+
+		System.out.println("enter instance id to terminate instance");
+		String existingInstanceId = sc.next();
+
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.standard().withRegion(REGION).build();
+
+		System.out.println("Terminating EC2 instance ...");
+
+		TerminateInstancesRequest request = new TerminateInstancesRequest().withInstanceIds(existingInstanceId);
+
+		ec2.terminateInstances(request);
+	}
+
 }
