@@ -250,4 +250,18 @@ public final class AWSHelper {
 
 		ec2.stopInstances(request);
 	}
+	
+	public static void rebootInstance(Scanner sc) {
+
+		System.out.println("enter instance id to reboot instance");
+		String existingInstanceId = sc.next();
+
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.standard().withRegion(REGION).build();
+
+		System.out.println("Rebooting EC2 instance ...");
+
+		RebootInstancesRequest request = new RebootInstancesRequest().withInstanceIds(existingInstanceId);
+
+		ec2.rebootInstances(request);
+	}
 }

@@ -51,6 +51,9 @@ public class EC2Instances {
 				case 5: // Stop instance
 					AWSHelper.stopInstance(sc);
 					break;	
+				case 6: // Reboot instance
+					AWSHelper.rebootInstance(sc);
+					break;	
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}
