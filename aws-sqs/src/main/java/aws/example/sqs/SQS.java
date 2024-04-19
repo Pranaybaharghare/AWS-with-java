@@ -45,6 +45,9 @@ public class SQS {
 				case 4:  // send message
 					SQSHelper.sendMessage(sc);
 					break;	
+				case 5:
+					SQSHelper.receiveMessage(sc);
+					break;	
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}

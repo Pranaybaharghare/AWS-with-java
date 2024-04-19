@@ -1,5 +1,6 @@
 package aws.example.sqs;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.amazonaws.services.sqs.AmazonSQS;
@@ -7,6 +8,8 @@ import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.AmazonSQSException;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.ListQueuesResult;
+import com.amazonaws.services.sqs.model.Message;
+import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
 
 public class SQSHelper {
@@ -110,6 +113,29 @@ public class SQSHelper {
 					.withMessageBody(message);
 			sqs.sendMessage(send_msg_request);
 			System.out.println("message sent successfully");
+		}
+
+	}
+	
+	public static void receiveMessage(Scanner sc) {
+		System.out.println("enter queue name");
+		String QUEUE_NAME = sc.next();
+		final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+
+		String queueUrl = sqs.getQueueUrl(QUEUE_NAME).getQueueUrl();
+
+		// Receive messages from the queue
+		ReceiveMessageRequest receiveRequest = new ReceiveMessageRequest().withQueueUrl(queueUrl)
+				.withMaxNumberOfMessages(5) // Adjust as needed
+				.withWaitTimeSeconds(20); // Adjust as needed
+
+		List<Message> messages = sqs.receiveMessage(receiveRequest).getMessages();
+
+		// Process the received messages
+		for (Message message : messages) {
+			System.out.println("Received message: " + message.getBody());
+
+			// TODO: Process the message content as needed
 		}
 
 	}
