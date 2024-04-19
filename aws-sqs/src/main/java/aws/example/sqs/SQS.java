@@ -23,7 +23,27 @@ public class SQS {
 	}
 
 	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		int option;
+		do {
+			printMenu();
+			option = sc.nextInt();
+			if (option > 0 && option <= 7) {
+				switch (option) {
+				case 0:
+					System.out.println("\nBye");
+					break;
+				case 1: // list all queues
+					SQSHelper.listAllQueues();
+					break;	
+				default:
+					System.out.println("ERROR: Enter a valid option!!");
+				}
+			} else {
+				System.out.println("ERROR: Enter a valid option!!");
+			}
 
+		} while (option != 0);
 	}
 
 }
