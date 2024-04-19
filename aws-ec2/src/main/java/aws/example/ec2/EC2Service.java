@@ -1,12 +1,12 @@
 
-package example;
+package aws.example.ec2;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 import com.jcraft.jsch.SftpException;
 
-public class EC2Instances {
+public class EC2Service {
 
 	private static void printMenu() {
 		System.out.println("\nMENU");
@@ -36,30 +36,30 @@ public class EC2Instances {
 					System.out.println("\nBye");
 					break;
 				case 1: // Describe all instances
-					AWSHelper.describeInstances();
+					EC2Helper.describeInstances();
 					break;
 				case 2: // Run instance
-					instanceId = AWSHelper.runInstance(sc);
+					instanceId = EC2Helper.runInstance(sc);
 					System.out.println("Instance Id: " + instanceId);
 					break;
 				case 3: // Describe instance
-					AWSHelper.describeInstance(sc);
+					EC2Helper.describeInstance(sc);
 					break;	
 				case 4: // Start instance
-					AWSHelper.startInstance(sc);
+					EC2Helper.startInstance(sc);
 					break;
 				case 5: // Stop instance
-					AWSHelper.stopInstance(sc);
+					EC2Helper.stopInstance(sc);
 					break;	
 				case 6: // Reboot instance
-					AWSHelper.rebootInstance(sc);
+					EC2Helper.rebootInstance(sc);
 					break;	
 				case 7: // Terminate instance
-					AWSHelper.terminateInstance(sc);
+					EC2Helper.terminateInstance(sc);
 					instanceId = null;
 					break;	
 				case 8: // connect with instance
-					AWSHelper.connectInstance(sc);
+					EC2Helper.connectInstance(sc);
 					break;	
 				default:
 					System.out.println("ERROR: Enter a valid option!!");

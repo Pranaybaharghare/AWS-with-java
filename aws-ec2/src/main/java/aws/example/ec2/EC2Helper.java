@@ -2,7 +2,7 @@
      * AWSHelper class with methods for managing AWS EC2 instances.
      */
 
-package example;
+package aws.example.ec2;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,13 +44,13 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.UserInfo;
 
-public final class AWSHelper {
+public final class EC2Helper {
 	private static final String REGION = "ap-south-1"; // Region name
 	private static final String AMI_ID = "ami-00952f27cf14db9cd"; // AMI Id
 	private static final String INSTANCE_TYPE = "t2.micro"; // Instance Type
 	// private static final String SECURITY_GROUP = "default"; //"sg-068f967e";
 
-	private AWSHelper() {
+	private EC2Helper() {
 	}
 
 	/**
