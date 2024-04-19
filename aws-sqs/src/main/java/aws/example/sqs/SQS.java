@@ -36,6 +36,9 @@ public class SQS {
 				case 1: // list all queues
 					SQSHelper.listAllQueues();
 					break;	
+				case 3: // delete queue
+					SQSHelper.deleteQueue(sc);
+					break;	
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}

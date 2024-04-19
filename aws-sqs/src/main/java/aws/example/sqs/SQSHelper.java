@@ -1,5 +1,7 @@
 package aws.example.sqs;
 
+import java.util.Scanner;
+
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.ListQueuesResult;
@@ -19,4 +21,12 @@ public class SQSHelper {
 		}
 	}
 
+	public static void deleteQueue(Scanner sc) {
+		System.out.println("enter a queue name");
+		String queueName = sc.next();
+		AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+		String queue_url = sqs.getQueueUrl(queueName).getQueueUrl();
+		sqs.deleteQueue(queue_url);
+		System.out.println("successfully deleted queue");
+	}
 }
