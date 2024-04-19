@@ -5,7 +5,7 @@ import java.util.Scanner;
 /**
  * Author :Pranay
  */
-public class SQS {
+public class SQSService {
 	/**
 	 * Print a menu in the screen with the available options
 	 */
