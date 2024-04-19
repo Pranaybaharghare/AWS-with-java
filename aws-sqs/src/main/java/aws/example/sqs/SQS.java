@@ -48,6 +48,9 @@ public class SQS {
 				case 5:
 					SQSHelper.receiveMessage(sc);
 					break;	
+				case 6:
+					SQSHelper.deleteMessageafterConsumption(sc);
+					break;
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
 				}

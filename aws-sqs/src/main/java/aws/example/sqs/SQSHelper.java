@@ -7,6 +7,7 @@ import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.AmazonSQSException;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
+import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.ListQueuesResult;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
@@ -136,6 +137,32 @@ public class SQSHelper {
 			System.out.println("Received message: " + message.getBody());
 
 			// TODO: Process the message content as needed
+		}
+
+	}
+	
+	public static void deleteMessageafterConsumption(Scanner sc) {
+		System.out.println("enter queue name");
+		String QUEUE_NAME = sc.next();
+		final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+
+		String queueUrl = sqs.getQueueUrl(QUEUE_NAME).getQueueUrl();
+
+		// Receive messages from the queue
+		ReceiveMessageRequest receiveRequest = new ReceiveMessageRequest().withQueueUrl(queueUrl)
+				.withMaxNumberOfMessages(5) // Adjust as needed
+				.withWaitTimeSeconds(0); // Adjust as needed
+
+		List<Message> messages = sqs.receiveMessage(receiveRequest).getMessages();
+
+		// Process the received messages
+		for (Message message : messages) {
+			// Delete the message from the queue once processed
+			DeleteMessageRequest deleteRequest = new DeleteMessageRequest().withQueueUrl(queueUrl)
+					.withReceiptHandle(message.getReceiptHandle());
+
+			sqs.deleteMessage(deleteRequest);
+			System.out.println("message deleted successfully");
 		}
 
 	}
