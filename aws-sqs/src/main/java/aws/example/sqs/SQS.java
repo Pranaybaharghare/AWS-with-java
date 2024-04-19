@@ -36,6 +36,9 @@ public class SQS {
 				case 1: // list all queues
 					SQSHelper.listAllQueues();
 					break;	
+				 case 2:  // create new queue
+					SQSHelper.createNewQueue(sc);
+					break;
 				case 3: // delete queue
 					SQSHelper.deleteQueue(sc);
 					break;	
