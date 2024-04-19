@@ -8,10 +8,13 @@ import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.AmazonSQSException;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.DeleteMessageRequest;
+import com.amazonaws.services.sqs.model.GetQueueAttributesRequest;
+import com.amazonaws.services.sqs.model.GetQueueAttributesResult;
 import com.amazonaws.services.sqs.model.ListQueuesResult;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.sqs.model.SetQueueAttributesRequest;
 
 public class SQSHelper {
 	public static void listAllQueues() {
@@ -165,6 +168,42 @@ public class SQSHelper {
 			System.out.println("message deleted successfully");
 		}
 
+	}
+	
+
+	public static void createDeadLetterQueue(Scanner sc) {
+		System.out.println("enter a source queue name");
+		String sourceQueueName = sc.next();
+		System.out.println("enter a dead letter queue name");
+		String deadLetterQueueName = sc.next();
+
+		final AmazonSQS sqs = AmazonSQSClientBuilder.defaultClient();
+
+		// Create dead-letter queue
+		try {
+			sqs.createQueue(deadLetterQueueName);
+		} catch (AmazonSQSException e) {
+			if (!e.getErrorCode().equals("QueueAlreadyExists")) {
+				throw e;
+			}
+		}
+
+		// Get dead-letter queue ARN
+		String dl_queue_url = sqs.getQueueUrl(deadLetterQueueName).getQueueUrl();
+
+		GetQueueAttributesResult queue_attrs = sqs
+				.getQueueAttributes(new GetQueueAttributesRequest(dl_queue_url).withAttributeNames("QueueArn"));
+
+		String dl_queue_arn = queue_attrs.getAttributes().get("QueueArn");
+
+		// Set dead letter queue with redrive policy on source queue.
+		String src_queue_url = sqs.getQueueUrl(sourceQueueName).getQueueUrl();
+
+		SetQueueAttributesRequest request = new SetQueueAttributesRequest().withQueueUrl(src_queue_url)
+				.addAttributesEntry("RedrivePolicy",
+						"{\"maxReceiveCount\":\"5\", \"deadLetterTargetArn\":\"" + dl_queue_arn + "\"}");
+
+		sqs.setQueueAttributes(request);
 	}
 
 }

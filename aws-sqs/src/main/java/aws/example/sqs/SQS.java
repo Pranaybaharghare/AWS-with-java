@@ -35,21 +35,24 @@ public class SQS {
 					break;
 				case 1: // list all queues
 					SQSHelper.listAllQueues();
-					break;	
-				 case 2:  // create new queue
+					break;
+				case 2: // create new queue
 					SQSHelper.createNewQueue(sc);
 					break;
 				case 3: // delete queue
 					SQSHelper.deleteQueue(sc);
-					break;	
-				case 4:  // send message
+					break;
+				case 4: // send message
 					SQSHelper.sendMessage(sc);
-					break;	
-				case 5:
+					break;
+				case 5: // receive message
 					SQSHelper.receiveMessage(sc);
-					break;	
-				case 6:
+					break;
+				case 6: // delete message after consumption
 					SQSHelper.deleteMessageafterConsumption(sc);
+					break;
+				case 7: // create dead letter queue
+					SQSHelper.createDeadLetterQueue(sc);
 					break;
 				default:
 					System.out.println("ERROR: Enter a valid option!!");
